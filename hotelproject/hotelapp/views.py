@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from hotelapp.models import Guest, Rooms
 
 # Create your views here.
@@ -29,6 +29,7 @@ def addAGuest (request):
         current_room = request.POST['roomno']
         guest.room_number = Rooms.objects.get(room_no = current_room)
         guest.save()
+        return HttpResponse ("added succesfully")
         
         # return render (request, 'addGuest.html')
     
