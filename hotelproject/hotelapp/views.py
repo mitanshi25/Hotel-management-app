@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from hotelapp.models import Guest, Rooms
+from django.db.models import Q
 
 # Create your views here.
 
@@ -41,3 +42,33 @@ def addAGuest (request):
 
     }
     return render(request, 'addGuest.html', context)
+
+def filterGuest(request):
+    if request.method == "POST":
+
+        guest = Guest()
+        guest.first_name = request.POST['fname']
+        guest.last_name = request.POST['lname']
+        guest.gov_id = request.POST['gov-id']
+
+        gues = Guest.objects.all()
+
+        if guest.first_name:
+            gues = gues.filter(Q(first_name__icontains=guest.first_name))
+
+        if guest.last_name:
+            gues = gues.filter(Q(last_name__icontains=guest.last_name))
+
+        if guest.gov_id:
+            gues = gues.filter(Q(gov_id=guest.gov_id))
+
+        context = {
+
+            'guests' : gues
+        }
+
+        return render(request, 'showallguest.html', context)
+    
+    if request.method == "GET":
+
+        return render (request, 'filterGuest.html')
