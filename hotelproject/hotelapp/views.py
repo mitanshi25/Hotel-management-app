@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import get_object_or_404, render, HttpResponse
 from hotelapp.models import Guest, Rooms
 from django.db.models import Q
 
@@ -30,9 +30,9 @@ def addAGuest (request):
         current_room = request.POST['roomno']
         guest.room_number = Rooms.objects.get(room_no = current_room)
         guest.save()
-        return HttpResponse ("added succesfully")
+        # return HttpResponse ("added succesfully")
         
-        # return render (request, 'addGuest.html')
+        return render (request, 'addGuest.html')
     
 
 
@@ -72,3 +72,38 @@ def filterGuest(request):
     if request.method == "GET":
 
         return render (request, 'filterGuest.html')
+
+
+# def delete_guest(request, gov_id=0):
+    # guest = get_object_or_404(Guest, gov_id=gov_id)
+    # guest.delete()
+    # if gov_id is not None:
+    #     deleteGuest = Guest.objects.get(gov_id = gov_id)
+    #     deleteGuest.delete()
+    #     return HttpResponse("guest removed succesfully")
+    # guest = Guest.objects.all()
+
+    # context = {
+
+    #     'guests' :guest
+    # }
+
+    # return render(request, "deleteguest.html", context)
+
+def delete_guest(request, gov_id=None):
+    if gov_id is not None:
+        try:
+            deleteGuest = Guest.objects.get(gov_id=gov_id)
+        except Guest.DoesNotExist:
+            return HttpResponse("Guest not found.")
+        else:
+            deleteGuest.delete()
+            return HttpResponse("Guest removed successfully")
+
+    guests = Guest.objects.all()
+
+    context = {
+        'guests': guests
+    }
+
+    return render(request, "deleteguest.html", context)
